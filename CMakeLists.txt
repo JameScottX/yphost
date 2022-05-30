@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.5)
 project(yphost LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g2 -ggdb") 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -25,7 +28,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #endif()
 
 
-include_directories( $ENV{MVCAM_COMMON_RUNENV}/../include  )
+include_directories( $ENV{MVCAM_COMMON_RUNENV}/../include 
+                     slc
+                    )
 link_directories( $ENV{MVCAM_COMMON_RUNENV}/64 )
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
@@ -36,6 +41,7 @@ if (OpenCV_FOUND)
 endif (OpenCV_FOUND)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
+link_directories(./slc)
 
 add_executable(yphost
   main.cpp
@@ -44,10 +50,15 @@ add_executable(yphost
   mainwindow.ui
   hkimage.cpp
   hkimage.h
+  yuv2rgb.cpp
+  yuv2rgb.h
+  car.cpp
+  car.h
+  slc/slc.h
 )
 
 target_link_libraries(yphost PRIVATE Qt5::Widgets )
 target_link_libraries(yphost PRIVATE ${OpenCV_LIBRARIES})
-# target_link_libraries(draw PRIVATE libslc.a -lpthread)
+target_link_libraries(yphost PRIVATE libslc.a -lpthread)
 target_link_libraries(yphost PRIVATE libMvCameraControl.so)
 

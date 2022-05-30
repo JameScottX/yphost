@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QFile qss("../examples/DarkOrange/DarkOrange.qss");
+    QFile qss("/home/jame/Desktop/yphost/examples/Dark Orange (FreeCAD)/stylesheet.qss");
     qss.open(QFile::ReadOnly);
     a.setStyleSheet(qss.readAll());
     qss.close();

@@ -13,21 +13,55 @@
 #include <QThread>
 #include <QImage>
 #include <QMessageBox>
-
 #include <QMutex>
+#include "yuv2rgb.h"
 
-extern MV_CC_PIXEL_CONVERT_PARAM stConvertParam;
+
 extern QMutex mutex;
+
+struct HK_Param
+{
+    float frame_rate = 0.0f;
+    unsigned int frame_counter = 0;
+    bool issharpen = false;
+
+} ;
 
 class HKHandle : public QThread
 {
     Q_OBJECT
 
 public:
-    HKHandle(QObject *parent = 0);
+    HKHandle(std::string cam_name_, QObject *parent = 0);
     ~HKHandle();
     bool isstop = false;
+    bool isopen = false;
+    bool go_close = false;
     float hk_ratio = 1;
+    HK_Param hkp;
+    unsigned char cam_id = 0;
+    std::string cam_name;
+
+    void open_camera(unsigned char id);
+    void close_camera(unsigned char id);
+    bool open_status();
+
+    void* handle = NULL;
+    unsigned char *pData = NULL; 
+    unsigned char *pData_rgb = NULL;     
+    unsigned char *pDataForRGB = NULL;
+    int nRet = MV_OK;
+    MV_CC_DEVICE_INFO_LIST stDeviceList;
+    MV_FRAME_OUT_INFO_EX stImageInfo = {0};
+    MV_CC_PIXEL_CONVERT_PARAM stConvertParam = {0};
+    MV_FRAME_OUT stOutFrame = {0};
+
+    bool PrintDeviceInfo(MV_CC_DEVICE_INFO* pstMVDevInfo);
+    void hk_find();
+    void hk_open(unsigned char nIndex);
+    void hk_get_img();
+    void hk_close();
+    void hk_end();
 
 signals:  
     void img_emit(QImage);
@@ -38,12 +72,8 @@ protected:
 };
 
 QImage mat2QImage(cv::Mat& mat);
+cv::Mat imgSharpen(const cv::Mat & img, char * arith);
 
-bool PrintDeviceInfo(MV_CC_DEVICE_INFO* pstMVDevInfo);
-void hk_find();
-void hk_open(unsigned char nIndex);
-void hk_get_img();
-void hk_end();
 
 
 #endif 

@@ -1,0 +1,1 @@
+/usr/bin/cc -rdynamic CMakeFiles/slc_test.dir/example/slc_test.c.o -o example/slc_test   -L/home/jame/Desktop/yphost/yp/slc/build/release  -Wl,-rpath,/home/jame/Desktop/yphost/yp/slc/build/release -Wl,-Bstatic -lslc -Wl,-Bdynamic -lpthread 

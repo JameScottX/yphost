@@ -1,45 +1,128 @@
 #include "hkimage.h"
 
-QImage mat2QImage(cv::Mat& mat);
 QMutex mutex;
 
-HKHandle::HKHandle(QObject *parent) : QThread(parent){
-
-    hk_find();
-    hk_open(0);
-    
+HKHandle::HKHandle(std::string cam_name_, QObject *parent) : QThread(parent){
     isstop = false;
+    this->cam_name = cam_name_;
 }
 
 HKHandle::~HKHandle(){
+
+    if (pData_rgb)
+    {
+        free(pData_rgb);	
+        pData_rgb = NULL;
+    }
     hk_end();
+}
+
+void HKHandle::open_camera(unsigned char id){
+    hk_find();
+    hk_open(id);
+    isstop = false;
+    nRet = MV_OK;
+    hk_ratio = 1;
+    isopen = true;
+}
+
+void HKHandle::close_camera(unsigned char id){
+    go_close  = true;
+}
+
+bool HKHandle::open_status(){
+    return this->isopen;
 }
 
 void HKHandle::run(){
 
+    bool __isstop = false;
     while(1){
-        if(isstop){
+
+        mutex.lock();
+        __isstop = isstop;
+        mutex.unlock();
+        if(__isstop){
+            if(isopen){
+                hk_close();
+                isopen = false;
+            }
             return;
+        }
+
+        // 相机关闭
+        if(go_close && isopen){
+            hk_close();
+            isopen = false;
+            go_close = false;
+        }
+        // 相机没有打开线程在此等待
+        while (!isopen){
+            if(__isstop){
+                return;
+            }
         }
 
         cv::Mat img_rev;
         hk_get_img();
-        img_rev = cv::Mat(3072, 2048, CV_8UC3, stConvertParam.pDstBuffer );
+        if(stOutFrame.stFrameInfo.enPixelType == 0){
+            printf("No image data!\n");
+            continue;
+        }
+        if(pData_rgb == NULL)
+            pData_rgb = (unsigned char*)malloc(stOutFrame.stFrameInfo.nWidth * stOutFrame.stFrameInfo.nHeight * 3);
+        // printf("enPixelType %d \n", stOutFrame.stFrameInfo.enPixelType);
 
+        if( stOutFrame.stFrameInfo.enPixelType == PixelType_Gvsp_YUV422_Packed){
+            yuv422packed_to_rgb24(FMT_UYVY, stOutFrame.pBufAddr, pData_rgb, stOutFrame.stFrameInfo.nWidth, stOutFrame.stFrameInfo.nHeight);
+        }else{
+            yuv422packed_to_rgb24(FMT_YUYV, stOutFrame.pBufAddr, pData_rgb, stOutFrame.stFrameInfo.nWidth, stOutFrame.stFrameInfo.nHeight);
+        }
+        img_rev = cv::Mat(stOutFrame.stFrameInfo.nHeight, stOutFrame.stFrameInfo.nWidth , CV_8UC3, pData_rgb);
+        
         mutex.lock();
-        cv::resize(img_rev, img_rev, cv::Size(),hk_ratio,hk_ratio);//我长宽都变为原来的0.5倍
+        if(hkp.issharpen == true){
+            char arith[9] = {
+            0, -1, 0, -1, 5, -1, 0, -1, 0};       //使用拉普拉斯算子
+            img_rev = imgSharpen(img_rev, arith);
+        }
+        cv::resize(img_rev, img_rev, cv::Size(),hk_ratio,hk_ratio, cv::INTER_LINEAR);//我长宽都变为原来的0.5倍
         mutex.unlock();
-
+        
         QImage temp = mat2QImage(img_rev);
-
         emit img_emit(temp);
-        // mp = mp.fromImage(temp);
-        // ui->hk_img_l->setPixmap(mp);
-        // ui->hk_img_l->show();
-        usleep(50000);
+        usleep(100);
     }
 }
 
+
+cv::Mat imgSharpen(const cv::Mat & img, char * arith)       //arith为3*3模板算子
+{
+    
+    int rows = img.rows;        //原图的行
+    int cols = img.cols * img.channels();   //原图的列
+    int offsetx = img.channels();       //像素点的偏移量
+
+    cv::Mat dst = cv::Mat::ones(img.rows-2, img.cols-2, img.type());
+
+    for(int i = 1; i < rows - 1; i++)
+    {
+    
+        const uchar* previous = img.ptr<uchar>(i - 1);
+        const uchar* current = img.ptr<uchar>(i);
+        const uchar* next = img.ptr<uchar>(i + 1);
+        uchar * output = dst.ptr<uchar>(i-1);
+        for(int j = offsetx ; j < cols - offsetx; j++)
+        {
+    
+            output[j - offsetx] =
+            cv::saturate_cast<uchar>( previous[j-offsetx]*arith[0] + previous[j]*arith[1] + previous[j+offsetx]*arith[2] +
+                                  current[j-offsetx]*arith[3]  + current[j]*arith[4]  + current[j+offsetx]*arith[5]  +
+                                  next[j-offsetx]*arith[6]     + next[j]*arith[7]     + next[j-offsetx]*arith[8] );
+        }
+    }
+    return dst;
+}
 
 QImage mat2QImage(cv::Mat& mat){
     // 8-bits unsigned, NO. OF CHANNELS = 1
@@ -100,15 +183,8 @@ QImage mat2QImage(cv::Mat& mat){
     }
 }
 
-MV_CC_DEVICE_INFO_LIST stDeviceList;
-int nRet = MV_OK;
-void* handle = NULL;
-unsigned char *pData = NULL;        
-unsigned char *pDataForRGB = NULL;
-unsigned char *pDataForSaveImage = NULL;
-MV_CC_PIXEL_CONVERT_PARAM stConvertParam = {0};
 
-bool PrintDeviceInfo(MV_CC_DEVICE_INFO* pstMVDevInfo){
+bool HKHandle::PrintDeviceInfo(MV_CC_DEVICE_INFO* pstMVDevInfo){
     if (NULL == pstMVDevInfo)
     {
         printf("The Pointer of pstMVDevInfo is NULL!\n");
@@ -139,10 +215,7 @@ bool PrintDeviceInfo(MV_CC_DEVICE_INFO* pstMVDevInfo){
     return true;
 }
 
-
-
-void hk_find(){
-
+void HKHandle::hk_find(){
     do{
         memset(&stDeviceList, 0, sizeof(MV_CC_DEVICE_INFO_LIST));
         // 枚举设备
@@ -162,20 +235,23 @@ void hk_find(){
                 if (NULL == pDeviceInfo)
                 {
                     break;
-                } 
-                PrintDeviceInfo(pDeviceInfo);            
+                }
+
+                PrintDeviceInfo(pDeviceInfo);       
+                std::string temp = (char*)pDeviceInfo->SpecialInfo.stGigEInfo.chModelName;
+                if(temp == this->cam_name){
+                    this->cam_id = i;
+                    printf("Use Devices id: %d  %s\n",this->cam_id ,pDeviceInfo->SpecialInfo.stGigEInfo.chModelName);
+                }     
             }  
-        } 
-        else
-        {
+        }else{
             printf("Find No Devices!\n");
             break;
         }
-
     }while (0);
 }
 
-void hk_open(unsigned char nIndex){
+void HKHandle::hk_open(unsigned char nIndex){
 
     do{
         if (nIndex >= stDeviceList.nDeviceNum){
@@ -225,171 +301,85 @@ void hk_open(unsigned char nIndex){
             break;
         }
 
-    }while (0);
-    
-}
-
-void hk_get_img(){
-
-    do{
-    // ch:获取数据包大小 | en:Get payload size
-
-    MVCC_INTVALUE stParam;
-    memset(&stParam, 0, sizeof(MVCC_INTVALUE));
-    nRet = MV_CC_GetIntValue(handle, "PayloadSize", &stParam);
-    if (MV_OK != nRet)
-    {
-        printf("Get PayloadSize fail! nRet [0x%x]\n", nRet);
-        break;
-    }
-
-    // 开始取流
-    // start grab image
-    nRet = MV_CC_StartGrabbing(handle);
-    if (MV_OK != nRet)
-    {
-        printf("MV_CC_StartGrabbing fail! nRet [%x]\n", nRet);
-        break;
-    }
-
-    MV_FRAME_OUT_INFO_EX stImageInfo = {0};
-    memset(&stImageInfo, 0, sizeof(MV_FRAME_OUT_INFO_EX));
-    pData = (unsigned char *)malloc(sizeof(unsigned char) * stParam.nCurValue);
-    if (NULL == pData)
-    {
-        break;
-    }
-    unsigned int nDataSize = stParam.nCurValue;
-
-    nRet = MV_CC_GetOneFrameTimeout(handle, pData, nDataSize, &stImageInfo, 1000);
-    if (nRet == MV_OK)
-    {
-        printf("Now you GetOneFrame, Width[%d], Height[%d], nFrameNum[%d]\n\n", 
-            stImageInfo.nWidth, stImageInfo.nHeight, stImageInfo.nFrameNum);
-
-
-        // 处理图像
-        // image processing
-        // printf("	0 	to do nothing\n");
-        // printf("	1 	to convert RGB\n");
-        // printf("	2 	to save as BMP\n");
-        // printf("Please Input Index: ");
-        int nInput = 1;
-        // scanf("%d", &nInput);
-        switch (nInput)
+        // ch:获取数据包大小 | en:Get payload size
+        MVCC_INTVALUE stParam;
+        memset(&stParam, 0, sizeof(MVCC_INTVALUE));
+        nRet = MV_CC_GetIntValue(handle, "PayloadSize", &stParam);
+        if (MV_OK != nRet)
         {
-            // 不做任何事，继续往下走
-            // do nothing, and go on next
-        case 0: 
-            {
-                break;
-            }
-            // 转换图像为RGB格式，用户可根据自身需求转换其他格式
-            // convert image format to RGB, user can convert to other format by their requirement
-        case 1: 
-            {
-                pDataForRGB = (unsigned char*)malloc(stImageInfo.nWidth * stImageInfo.nHeight * 4 + 2048);
-                if (NULL == pDataForRGB)
-                {
-                    break;
-                }
-                // 像素格式转换
-                // convert pixel format 
-                // MV_CC_PIXEL_CONVERT_PARAM stConvertParam = {0};
-                // 从上到下依次是：图像宽，图像高，输入数据缓存，输入数据大小，源像素格式，
-                // 目标像素格式，输出数据缓存，提供的输出缓冲区大小
-                // Top to bottom are：image width, image height, input data buffer, input data size, source pixel format, 
-                // destination pixel format, output data buffer, provided output buffer size
-                stConvertParam.nWidth = stImageInfo.nWidth;
-                stConvertParam.nHeight = stImageInfo.nHeight;
-                stConvertParam.pSrcData = pData;
-                stConvertParam.nSrcDataLen = stImageInfo.nFrameLen;
-                stConvertParam.enSrcPixelType = stImageInfo.enPixelType;
-                stConvertParam.enDstPixelType = PixelType_Gvsp_RGB8_Packed;
-                stConvertParam.pDstBuffer = pDataForRGB;
-                stConvertParam.nDstBufferSize = stImageInfo.nWidth * stImageInfo.nHeight *  4 + 2048;
-                nRet = MV_CC_ConvertPixelType(handle, &stConvertParam);
-                if (MV_OK != nRet)
-                {
-                    printf("MV_CC_ConvertPixelType fail! nRet [%x]\n", nRet);
-                    break;
-                }
-
-                // FILE* fp = fopen("AfterConvert_RGB.raw", "wb");
-                // if (NULL == fp)
-                // {
-                //     printf("fopen failed\n");
-                //     break;
-                // }
-                // fwrite(pDataForRGB, 1, stConvertParam.nDstLen, fp);
-                // fclose(fp);
-
-                printf("convert succeed\n");
-                break;
-            }
-        case 2:
-            {
-                pDataForSaveImage = (unsigned char*)malloc(stImageInfo.nWidth * stImageInfo.nHeight * 4 + 2048);
-                if (NULL == pDataForSaveImage)
-                {
-                    break;
-                }
-                // 填充存图参数
-                // fill in the parameters of save image
-                MV_SAVE_IMAGE_PARAM_EX stSaveParam;
-                memset(&stSaveParam, 0, sizeof(MV_SAVE_IMAGE_PARAM_EX));
-                // 从上到下依次是：输出图片格式，输入数据的像素格式，提供的输出缓冲区大小，图像宽，
-                // 图像高，输入数据缓存，输出图片缓存，JPG编码质量
-                // Top to bottom are：
-                stSaveParam.enImageType = MV_Image_Bmp; 
-                stSaveParam.enPixelType = stImageInfo.enPixelType; 
-                stSaveParam.nBufferSize = stImageInfo.nWidth * stImageInfo.nHeight * 4 + 2048;
-                stSaveParam.nWidth      = stImageInfo.nWidth; 
-                stSaveParam.nHeight     = stImageInfo.nHeight; 
-                stSaveParam.pData       = pData;
-                stSaveParam.nDataLen    = stImageInfo.nFrameLen;
-                stSaveParam.pImageBuffer = pDataForSaveImage;
-                stSaveParam.nJpgQuality = 80;
-
-                nRet = MV_CC_SaveImageEx2(handle, &stSaveParam);
-                if(MV_OK != nRet)
-                {
-                    printf("failed in MV_CC_SaveImage,nRet[%x]\n", nRet);
-                    break;
-                }
-
-                FILE* fp = fopen("image.bmp", "wb");
-                if (NULL == fp)
-                {
-                    printf("fopen failed\n");
-                    break;
-                }
-                fwrite(pDataForSaveImage, 1, stSaveParam.nImageLen, fp);
-                fclose(fp);
-                printf("save image succeed\n");
-                break;
-            }
-        default:
+            printf("Get PayloadSize fail! nRet [0x%x]\n", nRet);
             break;
         }
-    }else{
-        printf("No data[%x]\n", nRet);
-    }
 
-    // 停止取流
-    // end grab image
-    nRet = MV_CC_StopGrabbing(handle);
-    if (MV_OK != nRet)
+        // 开始取流
+        // start grab image
+        nRet = MV_CC_StartGrabbing(handle);
+        if (MV_OK != nRet)
+        {
+            printf("MV_CC_StartGrabbing fail! nRet [%x]\n", nRet);
+            break;
+        }
+        
+    }while (0);
+
+    memset(&stOutFrame, 0, sizeof(MV_FRAME_OUT));
+}
+
+void HKHandle::hk_get_img(){
+
+    do{
+
+    nRet = MV_CC_GetImageBuffer(handle, &stOutFrame, 1000);
+    if (nRet == MV_OK)
     {
-        printf("MV_CC_StopGrabbing fail! nRet [%x]\n", nRet);
-        break;
+        // printf("Get One Frame: Width[%d], Height[%d], nFrameNum[%d]\n",
+        //     stOutFrame.stFrameInfo.nWidth, stOutFrame.stFrameInfo.nHeight, stOutFrame.stFrameInfo.nFrameNum);
+    }
+    else
+    {
+        printf("No data[0x%x]\n", nRet);
+    }
+    // printf(" stOutFrame.stFrameInfo %d \n", stOutFrame.stFrameInfo.enPixelType);
+
+    if(NULL != stOutFrame.pBufAddr)
+    {
+        nRet = MV_CC_FreeImageBuffer(handle, &stOutFrame);
+        if(nRet != MV_OK)
+        {
+            printf("Free Image Buffer fail! nRet [0x%x]\n", nRet);
+        }
     }
 
+    }while (0);
+}
+
+void HKHandle::hk_close(){
+
+    do{
+        // 停止取流
+        // end grab image
+        nRet = MV_CC_StopGrabbing(handle);
+        if (MV_OK != nRet)
+        {
+            printf("MV_CC_StopGrabbing fail! nRet [%x]\n", nRet);
+            break;
+        }
+
+        // ch:关闭设备 | Close device
+        nRet = MV_CC_CloseDevice(handle);
+        if (MV_OK != nRet)
+        {
+            printf("ClosDevice fail! nRet [0x%x]\n", nRet);
+            break;
+        }
     }while (0);
     
 }
 
-void hk_end(){
+void HKHandle::hk_end(){
+
+
+    hk_close();
 
     if (nRet != MV_OK)
     {
@@ -399,6 +389,7 @@ void hk_end(){
             handle = NULL;
         }
     }
+    
     if (pData)
     {
         free(pData);	
@@ -408,11 +399,6 @@ void hk_end(){
     {
         free(pDataForRGB);
         pDataForRGB = NULL;
-    }
-    if (pDataForSaveImage)
-    {
-        free(pDataForSaveImage);
-        pDataForSaveImage = NULL;
     }
 }
 

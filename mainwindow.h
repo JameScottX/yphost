@@ -16,6 +16,7 @@
 #include <opencv2/highgui/highgui_c.h>
 
 #include "hkimage.h"
+#include "car.h"
 
 using namespace cv;
 
@@ -34,27 +35,34 @@ public:
     QTimer *timer;
     QPixmap mp;
     
-    cv::VideoCapture hk_img;
-    cv::VideoCapture car_f;
-    cv::VideoCapture car_h;
-    cv::Mat frame_f,frame_h;
-    bool car_f_stop = false;
-    cv::Mat getFrame_f();
-    void OpenCamera();
-
     QPoint currentPt;
     QPoint currentMt;
     
     HKHandle *hk;
-
+    HKHandle *hk_up;
+    CAR *car;
+    
 private:
     Ui::MainWindow *ui;
+
 protected:
     bool eventFilter(QObject *target, QEvent *event);
-
+    void closeEvent(QCloseEvent *event);
+    
 protected slots:
-    void img_update();
-    void img_show(QImage);
+    void m_timer();
+    void hk_cam_f_show(QImage);
+    void hk_cam_f_rb_open();
+    void hk_cam_u_show(QImage);
+    void hk_cam_u_rb_open();
+
+    void state_change();
+
+    void car_img_show(QImage);
+    void car_img1_show(QImage);
+    void cat_status_feedback(float *uart_val);
+
+    void car_command();
 
 };
 

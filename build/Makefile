@@ -142,6 +142,30 @@ yphost_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/yphost_autogen.dir/build.make CMakeFiles/yphost_autogen.dir/build
 .PHONY : yphost_autogen/fast
 
+car.o: car.cpp.o
+.PHONY : car.o
+
+# target to build an object file
+car.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yphost.dir/build.make CMakeFiles/yphost.dir/car.cpp.o
+.PHONY : car.cpp.o
+
+car.i: car.cpp.i
+.PHONY : car.i
+
+# target to preprocess a source file
+car.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yphost.dir/build.make CMakeFiles/yphost.dir/car.cpp.i
+.PHONY : car.cpp.i
+
+car.s: car.cpp.s
+.PHONY : car.s
+
+# target to generate assembly for a file
+car.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yphost.dir/build.make CMakeFiles/yphost.dir/car.cpp.s
+.PHONY : car.cpp.s
+
 hkimage.o: hkimage.cpp.o
 .PHONY : hkimage.o
 
@@ -238,6 +262,30 @@ yphost_autogen/mocs_compilation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/yphost.dir/build.make CMakeFiles/yphost.dir/yphost_autogen/mocs_compilation.cpp.s
 .PHONY : yphost_autogen/mocs_compilation.cpp.s
 
+yuv2rgb.o: yuv2rgb.cpp.o
+.PHONY : yuv2rgb.o
+
+# target to build an object file
+yuv2rgb.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yphost.dir/build.make CMakeFiles/yphost.dir/yuv2rgb.cpp.o
+.PHONY : yuv2rgb.cpp.o
+
+yuv2rgb.i: yuv2rgb.cpp.i
+.PHONY : yuv2rgb.i
+
+# target to preprocess a source file
+yuv2rgb.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yphost.dir/build.make CMakeFiles/yphost.dir/yuv2rgb.cpp.i
+.PHONY : yuv2rgb.cpp.i
+
+yuv2rgb.s: yuv2rgb.cpp.s
+.PHONY : yuv2rgb.s
+
+# target to generate assembly for a file
+yuv2rgb.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yphost.dir/build.make CMakeFiles/yphost.dir/yuv2rgb.cpp.s
+.PHONY : yuv2rgb.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -248,6 +296,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... yphost_autogen"
 	@echo "... yphost"
+	@echo "... car.o"
+	@echo "... car.i"
+	@echo "... car.s"
 	@echo "... hkimage.o"
 	@echo "... hkimage.i"
 	@echo "... hkimage.s"
@@ -260,6 +311,9 @@ help:
 	@echo "... yphost_autogen/mocs_compilation.o"
 	@echo "... yphost_autogen/mocs_compilation.i"
 	@echo "... yphost_autogen/mocs_compilation.s"
+	@echo "... yuv2rgb.o"
+	@echo "... yuv2rgb.i"
+	@echo "... yuv2rgb.s"
 .PHONY : help
 
 

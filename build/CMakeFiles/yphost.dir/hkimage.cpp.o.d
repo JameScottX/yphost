@@ -400,4 +400,5 @@ CMakeFiles/yphost.dir/hkimage.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtGui/qcursor.h \
  /usr/include/x86_64-linux-gnu/qt5/QtGui/qkeysequence.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QMutex \
- /usr/include/x86_64-linux-gnu/qt5/QtCore/qmutex.h
+ /usr/include/x86_64-linux-gnu/qt5/QtCore/qmutex.h \
+ /home/jame/Desktop/yphost/yuv2rgb.h

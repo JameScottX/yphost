@@ -1,0 +1,4 @@
+/home/jame/Desktop/yphost/yp/slc/build/CMakeFiles/slc.dir
+/home/jame/Desktop/yphost/yp/slc/build/CMakeFiles/slc_test.dir
+/home/jame/Desktop/yphost/yp/slc/build/CMakeFiles/edit_cache.dir
+/home/jame/Desktop/yphost/yp/slc/build/CMakeFiles/rebuild_cache.dir

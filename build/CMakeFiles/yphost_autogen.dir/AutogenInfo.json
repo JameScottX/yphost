@@ -53,6 +53,12 @@
 	"HEADERS" : 
 	[
 		[
+			"/home/jame/Desktop/yphost/car.h",
+			"MU",
+			"EWIEGA46WW/moc_car.cpp",
+			null
+		],
+		[
 			"/home/jame/Desktop/yphost/hkimage.h",
 			"MU",
 			"EWIEGA46WW/moc_hkimage.cpp",
@@ -62,6 +68,18 @@
 			"/home/jame/Desktop/yphost/mainwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp",
+			null
+		],
+		[
+			"/home/jame/Desktop/yphost/slc/slc.h",
+			"MU",
+			"44BYYKD67L/moc_slc.cpp",
+			null
+		],
+		[
+			"/home/jame/Desktop/yphost/yuv2rgb.h",
+			"MU",
+			"EWIEGA46WW/moc_yuv2rgb.cpp",
 			null
 		]
 	],
@@ -81,6 +99,7 @@
 		"/home/jame/Desktop/yphost/build",
 		"/home/jame/Desktop/yphost",
 		"/opt/MVS/include",
+		"/home/jame/Desktop/yphost/slc",
 		"/usr/include/opencv",
 		"/usr/include/x86_64-linux-gnu/qt5",
 		"/usr/include/x86_64-linux-gnu/qt5/QtWidgets",
@@ -120,9 +139,11 @@
 	"SETTINGS_FILE" : "/home/jame/Desktop/yphost/build/CMakeFiles/yphost_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[ "/home/jame/Desktop/yphost/car.cpp", "MU", null ],
 		[ "/home/jame/Desktop/yphost/hkimage.cpp", "MU", null ],
 		[ "/home/jame/Desktop/yphost/main.cpp", "MU", null ],
-		[ "/home/jame/Desktop/yphost/mainwindow.cpp", "MU", null ]
+		[ "/home/jame/Desktop/yphost/mainwindow.cpp", "MU", null ],
+		[ "/home/jame/Desktop/yphost/yuv2rgb.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

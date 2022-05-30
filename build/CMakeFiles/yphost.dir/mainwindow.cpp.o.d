@@ -434,6 +434,8 @@ CMakeFiles/yphost.dir/mainwindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtGui/qimage.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QMutex \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qmutex.h \
+ /home/jame/Desktop/yphost/yuv2rgb.h /home/jame/Desktop/yphost/car.h \
+ /home/jame/Desktop/yphost/slc/slc.h \
  /home/jame/Desktop/yphost/build/yphost_autogen/include/ui_mainwindow.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QVariant \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qvariant.h \
@@ -449,6 +451,8 @@ CMakeFiles/yphost.dir/mainwindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtGui/qinputmethod.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QButtonGroup \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qbuttongroup.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QGroupBox \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qgroupbox.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QHBoxLayout \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qboxlayout.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlayout.h \
@@ -475,11 +479,26 @@ CMakeFiles/yphost.dir/mainwindow.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMenuBar \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmenubar.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmenu.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPushButton \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qpushbutton.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractbutton.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QRadioButton \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qradiobutton.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QScrollArea \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QSpacerItem \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlayoutitem.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QStatusBar \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qstatusbar.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTabWidget \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtabwidget.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTextBrowser \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtextbrowser.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtextedit.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtGui/qtextdocument.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtGui/qtextoption.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtGui/qtextcursor.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtGui/qtextformat.h \
+ /usr/include/x86_64-linux-gnu/qt5/QtGui/qpen.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QToolBar \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtoolbar.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QVBoxLayout \

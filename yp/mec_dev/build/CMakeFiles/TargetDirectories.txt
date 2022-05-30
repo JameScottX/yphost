@@ -1,0 +1,3 @@
+/home/orangepi/Desktop/yp/mec_dev/build/CMakeFiles/rebuild_cache.dir
+/home/orangepi/Desktop/yp/mec_dev/build/CMakeFiles/edit_cache.dir
+/home/orangepi/Desktop/yp/mec_dev/build/CMakeFiles/mec_dev.dir

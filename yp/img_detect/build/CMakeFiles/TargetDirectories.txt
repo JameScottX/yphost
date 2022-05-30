@@ -1,0 +1,3 @@
+/home/jame/Desktop/yphost/yp/img_detect/build/CMakeFiles/img_detect.dir
+/home/jame/Desktop/yphost/yp/img_detect/build/CMakeFiles/edit_cache.dir
+/home/jame/Desktop/yphost/yp/img_detect/build/CMakeFiles/rebuild_cache.dir

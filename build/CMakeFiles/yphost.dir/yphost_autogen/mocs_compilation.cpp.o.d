@@ -1,48 +1,52 @@
 CMakeFiles/yphost.dir/yphost_autogen/mocs_compilation.cpp.o: \
  /home/jame/Desktop/yphost/build/yphost_autogen/mocs_compilation.cpp \
  /usr/include/stdc-predef.h \
- /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/moc_hkimage.cpp \
- /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/../../../hkimage.h \
- /usr/include/stdio.h \
+ /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/moc_car.cpp \
+ /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/../../../car.h \
+ /home/jame/Desktop/yphost/slc/slc.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/bits/long-double.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
- /usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h \
  /usr/include/x86_64-linux-gnu/bits/types.h \
  /usr/include/x86_64-linux-gnu/bits/typesizes.h \
- /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
- /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
- /usr/include/x86_64-linux-gnu/bits/libio.h \
- /usr/include/x86_64-linux-gnu/bits/_G_config.h \
- /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
- /usr/lib/gcc/x86_64-linux-gnu/7/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
- /usr/include/strings.h /usr/include/unistd.h \
- /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
- /usr/include/x86_64-linux-gnu/bits/environments.h \
- /usr/include/x86_64-linux-gnu/bits/confname.h \
- /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
- /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
- /usr/include/c++/7/stdlib.h /usr/include/c++/7/cstdlib \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /usr/include/opencv2/core.hpp /usr/include/opencv2/core/cvdef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/syslimits.h \
+ /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/linux/limits.h \
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
+ /usr/include/opencv2/core/hal/interface.h /usr/include/c++/7/cstddef \
  /usr/include/x86_64-linux-gnu/c++/7/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/os_defines.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/cpu_defines.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h \
+ /usr/include/c++/7/cstdint \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/emmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/xmmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/mmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/mm_malloc.h \
+ /usr/include/c++/7/stdlib.h /usr/include/c++/7/cstdlib \
  /usr/include/stdlib.h /usr/include/x86_64-linux-gnu/bits/waitflags.h \
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
  /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
+ /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
  /usr/include/x86_64-linux-gnu/sys/types.h \
  /usr/include/x86_64-linux-gnu/bits/types/clock_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/time_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/timer_t.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-intn.h /usr/include/endian.h \
+ /usr/include/x86_64-linux-gnu/bits/types/timer_t.h /usr/include/endian.h \
  /usr/include/x86_64-linux-gnu/bits/endian.h \
  /usr/include/x86_64-linux-gnu/bits/byteswap.h \
  /usr/include/x86_64-linux-gnu/bits/byteswap-16.h \
@@ -59,30 +63,8 @@ CMakeFiles/yphost.dir/yphost_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
  /usr/include/alloca.h /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
- /usr/include/c++/7/bits/std_abs.h \
- /opt/MVS/lib/../include/MvCameraControl.h \
- /opt/MVS/lib/../include/MvErrorDefine.h \
- /opt/MVS/lib/../include/CameraParams.h \
- /opt/MVS/lib/../include/PixelType.h \
- /usr/lib/gcc/x86_64-linux-gnu/7/include/stdint.h /usr/include/stdint.h \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/opencv2/core.hpp /usr/include/opencv2/core/cvdef.h \
- /usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/7/include-fixed/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /usr/include/opencv2/core/hal/interface.h /usr/include/c++/7/cstddef \
- /usr/include/c++/7/cstdint \
- /usr/lib/gcc/x86_64-linux-gnu/7/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/7/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/7/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/7/include/mm_malloc.h \
- /usr/include/opencv2/core/version.hpp /usr/include/opencv2/core/base.hpp \
+ /usr/include/c++/7/bits/std_abs.h /usr/include/opencv2/core/version.hpp \
+ /usr/include/opencv2/core/base.hpp \
  /usr/include/opencv2/opencv_modules.hpp /usr/include/c++/7/climits \
  /usr/include/c++/7/algorithm /usr/include/c++/7/utility \
  /usr/include/c++/7/bits/stl_relops.h /usr/include/c++/7/bits/stl_pair.h \
@@ -114,12 +96,17 @@ CMakeFiles/yphost.dir/yphost_autogen/mocs_compilation.cpp.o: \
  /usr/include/c++/7/bits/memoryfwd.h \
  /usr/include/c++/7/bits/uniform_int_dist.h /usr/include/c++/7/limits \
  /usr/include/opencv2/core/cvstd.hpp /usr/include/c++/7/cstring \
- /usr/include/c++/7/cctype /usr/include/ctype.h /usr/include/c++/7/string \
+ /usr/include/string.h /usr/include/strings.h /usr/include/c++/7/cctype \
+ /usr/include/ctype.h /usr/include/c++/7/string \
  /usr/include/c++/7/bits/stringfwd.h \
  /usr/include/c++/7/bits/char_traits.h /usr/include/c++/7/bits/postypes.h \
  /usr/include/c++/7/cwchar /usr/include/wchar.h \
+ /usr/lib/gcc/x86_64-linux-gnu/7/include/stdarg.h \
  /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
  /usr/include/c++/7/bits/allocator.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/c++allocator.h \
  /usr/include/c++/7/ext/new_allocator.h \
@@ -146,6 +133,10 @@ CMakeFiles/yphost.dir/yphost_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/setjmp.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/atomic_word.h \
  /usr/include/c++/7/ext/string_conversions.h /usr/include/c++/7/cstdio \
+ /usr/include/stdio.h /usr/include/x86_64-linux-gnu/bits/libio.h \
+ /usr/include/x86_64-linux-gnu/bits/_G_config.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/sys_errlist.h \
  /usr/include/c++/7/cerrno /usr/include/errno.h \
  /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/x86_64-linux-gnu/asm/errno.h \
@@ -404,6 +395,19 @@ CMakeFiles/yphost.dir/yphost_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtGui/qkeysequence.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QMutex \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qmutex.h \
+ /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/../../../hkimage.h \
+ /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/x86_64-linux-gnu/bits/environments.h \
+ /usr/include/x86_64-linux-gnu/bits/confname.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
+ /opt/MVS/lib/../include/MvCameraControl.h \
+ /opt/MVS/lib/../include/MvErrorDefine.h \
+ /opt/MVS/lib/../include/CameraParams.h \
+ /opt/MVS/lib/../include/PixelType.h \
+ /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/../../../yuv2rgb.h \
+ /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/moc_hkimage.cpp \
+ /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/../../../hkimage.h \
  /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/moc_mainwindow.cpp \
  /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/../../../mainwindow.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMainWindow \
@@ -437,5 +441,4 @@ CMakeFiles/yphost.dir/yphost_autogen/mocs_compilation.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qframe.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QScrollBar \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qscrollbar.h \
- /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractslider.h \
- /home/jame/Desktop/yphost/build/yphost_autogen/EWIEGA46WW/../../../hkimage.h
+ /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractslider.h

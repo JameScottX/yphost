@@ -433,6 +433,8 @@ CMakeFiles/yphost.dir/main.cpp.o: /home/jame/Desktop/yphost/main.cpp \
  /usr/include/x86_64-linux-gnu/qt5/QtGui/qimage.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/QMutex \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qmutex.h \
+ /home/jame/Desktop/yphost/yuv2rgb.h /home/jame/Desktop/yphost/car.h \
+ /home/jame/Desktop/yphost/slc/slc.h \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QApplication \
  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qapplication.h \
  /usr/include/x86_64-linux-gnu/qt5/QtCore/qcoreapplication.h \
