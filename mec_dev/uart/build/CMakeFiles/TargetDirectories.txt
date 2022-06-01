@@ -1,0 +1,3 @@
+/home/jame/Desktop/yphost/uart/build/CMakeFiles/uart.dir
+/home/jame/Desktop/yphost/uart/build/CMakeFiles/edit_cache.dir
+/home/jame/Desktop/yphost/uart/build/CMakeFiles/rebuild_cache.dir

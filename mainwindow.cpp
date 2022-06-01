@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     car = new CAR();
     connect(car, SIGNAL(car_img(QImage)), this, SLOT(car_img_show(QImage)));
     connect(car, SIGNAL(car_img1(QImage)), this, SLOT(car_img1_show(QImage)));
-    connect(car, SIGNAL(car_uart(float*)), this, SLOT(cat_status_feedback(float*)));
+    connect(car, SIGNAL(car_uart(float*)), this, SLOT(car_status_feedback(float*)));
     car->start();
 
     car_img_slc_init();
@@ -124,12 +124,35 @@ void MainWindow::car_img1_show(QImage img){
     ui->car_h_img_l->show();
 }
 
-void MainWindow::cat_status_feedback(float *uart_val){
+void MainWindow::car_status_feedback(float *uart_val){
     ui->car_speed_l->setText(QString::number(uart_val[0]));
+    ui->car_yaw_l->setText(QString::number(uart_val[1]));
+    if(uart_val[2] == 0){
+        ui->updown_l->setText("DOWN");
+    }else{
+        ui->updown_l->setText("UP");
+    }
+
+    ui->bogan_p_l->setText(QString::number(uart_val[4]));
+    ui->bogan_v_l->setText(QString::number(uart_val[5]));
+    ui->bogan_t_l->setText(QString::number(uart_val[6]));
+
+    ui->laser0_l->setText(QString::number(uart_val[8]));
+    ui->laser1_l->setText(QString::number(uart_val[9]));
+    ui->laser2_l->setText(QString::number(uart_val[10]));
+
+    ui->ultrasound_f->setText(QString::number(uart_val[12]));
+    ui->ultrasound_f_2->setText(QString::number(uart_val[13]));
+    
 }
 
 void MainWindow::car_command(){
     // car->move_spd = 0;
+    // 车速 车姿态 升降状态 0.0
+    // 拨杆角度　拨杆速度　拨杆扭矩 0.0
+    // 激光数据0　激光数据1　激光数据2 0.0
+    // 超声波前 超声波后 前碰撞状态 0.0
+
     float val[FRAME_LENGTH] = {
         3.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 

@@ -60,7 +60,7 @@ protected slots:
 
     void car_img_show(QImage);
     void car_img1_show(QImage);
-    void cat_status_feedback(float *uart_val);
+    void car_status_feedback(float *uart_val);
 
     void car_command();
 

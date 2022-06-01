@@ -1,0 +1,17 @@
+#
+# Normal rules
+#
+.*
+
+#
+# Auto generic files
+#
+
+biped/mujoco/build/*
+
+*/build/*
+
+#
+# We don't want to ignore the following even if they are dot-files
+#
+!.gitignore
