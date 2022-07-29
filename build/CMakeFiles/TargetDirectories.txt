@@ -1,4 +1,0 @@
-/home/jame/Desktop/yphost/build/CMakeFiles/yphost.dir
-/home/jame/Desktop/yphost/build/CMakeFiles/edit_cache.dir
-/home/jame/Desktop/yphost/build/CMakeFiles/rebuild_cache.dir
-/home/jame/Desktop/yphost/build/CMakeFiles/yphost_autogen.dir
