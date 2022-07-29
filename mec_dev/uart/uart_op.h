@@ -3,14 +3,14 @@
 
 #include "string.h"
 
-#define HEAD0           0xff
-#define HEAD1           0xe1
-#define HEAD12           0xe2
-#define HEAD13           0xe3
-#define HEAD14           0xe4
-#define TAIL            0xfe
-#define FRAME_LENGTH    16
-#define UART_FRAME_LENGTH    4
+#define HEAD0               0xff
+#define HEAD1               0xe1
+#define HEAD12              0xe2
+#define HEAD13              0xe3
+#define HEAD14              0xe4
+#define TAIL                0xfe
+#define FRAME_LENGTH        16              // tcp 一帧float数量
+#define UART_FRAME_LENGTH   4               // uart 一帧float数量
 
 int uart_open_normal(char *devname, int bud, int (*usr_func)(float *, int, int));
 int uart_close_normal(int &fd);

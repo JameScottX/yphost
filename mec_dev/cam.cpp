@@ -9,7 +9,7 @@
 using namespace cv;
 using namespace std;
  
-#define MSG_LENG 96
+#define MSG_LENG 96   // tcp 车载信息字节数
 
 const float ratio_ = 0.25;
 mHandle mhandle = NULL;
@@ -23,10 +23,11 @@ int func_call(void *arg, char *buf, int len){
     // uart 发送
     float *val = (float *)buf;
     // printf("uart send %f %d \n", val[0], len);
+    // 串口协议打包
     uart_pack(fd, val, UART_FRAME_LENGTH, HEAD1);
     uart_pack(fd, (val+4), UART_FRAME_LENGTH, HEAD12);
     uart_pack(fd, (val+8), UART_FRAME_LENGTH, HEAD13);
-    uart_pack(fd, (val+12), UART_FRAME_LENGTH, HEAD14);
+    // uart_pack(fd, (val+12), UART_FRAME_LENGTH, HEAD14);
     return 0;
 }
 
@@ -51,20 +52,21 @@ int uart_rev_msg(float *val, int size, int flag){
 
     if(flag == HEAD1){
         memcpy(uart_val, val, sizeof(float)*UART_FRAME_LENGTH);
-        printf("HEAD1 uart receive from car %f %f %f %f\n", uart_val[0], uart_val[1],
-                        uart_val[2], uart_val[3]);
+        // printf("HEAD1 uart receive from car %f %f %f %f\n", uart_val[0], uart_val[1],
+        //                 uart_val[2], uart_val[3]);
     }else if(flag == HEAD12){
         memcpy(uart_val + 4, val, sizeof(float)*UART_FRAME_LENGTH);
         // printf("HEAD12 uart receive from car %f %f %f %f\n", uart_val[4], uart_val[5],
         //                 uart_val[6], uart_val[7]);
     }else if(flag == HEAD13){
         memcpy(uart_val + 8, val, sizeof(float)*UART_FRAME_LENGTH);
+        // printf("HEAD13 uart receive from car %f %f %f %f\n", uart_val[8], uart_val[9],
+        //                 uart_val[10], uart_val[11]);
     }else if(flag == HEAD14){
         memcpy(uart_val + 12, val, sizeof(float)*UART_FRAME_LENGTH);
+        // printf("HEAD14 uart receive from car %f %f %f %f\n", uart_val[12], uart_val[13],
+        //                 uart_val[14], uart_val[15]);
     }
-
-    // printf("uart receive from car %f %f %f %f\n", val[0], val[1],
-    //                     val[2], val[3]);
     return 0;
 }
 

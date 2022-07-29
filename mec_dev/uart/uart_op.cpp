@@ -111,6 +111,7 @@ void uart_pack(int &fd, float *val, unsigned short size, int flag){
     // memcpy(buffer + 2, bytes, size * sizeof(float));
     *(buffer+2+size * sizeof(float)) = TAIL;
     write(fd, buffer, 3+size * sizeof(float));
+    usleep(10000);
 }
 
 

@@ -67,6 +67,7 @@ void HKHandle::run(){
         hk_get_img();
         if(stOutFrame.stFrameInfo.enPixelType == 0){
             printf("No image data!\n");
+            usleep(10000000);
             continue;
         }
         if(pData_rgb == NULL)

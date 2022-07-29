@@ -41,6 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->hk_cam_u_rb, SIGNAL(toggled(bool)), this, SLOT(hk_cam_u_rb_open()));
     // 一开始打开前相机
     hk_cam_f_rb_open();
+    // 初始化界面反馈
+    float uart_val[16] = {0.0f};
+    car_status_feedback(uart_val);
 }
 
 MainWindow::~MainWindow()
@@ -125,6 +128,7 @@ void MainWindow::car_img1_show(QImage img){
 }
 
 void MainWindow::car_status_feedback(float *uart_val){
+
     ui->car_speed_l->setText(QString::number(uart_val[0]));
     ui->car_yaw_l->setText(QString::number(uart_val[1]));
     if(uart_val[2] == 0){
@@ -132,12 +136,12 @@ void MainWindow::car_status_feedback(float *uart_val){
     }else{
         ui->updown_l->setText("UP");
     }
-
+    // 拨杆
     ui->bogan_p_l->setText(QString::number(uart_val[4]));
     ui->bogan_v_l->setText(QString::number(uart_val[5]));
     ui->bogan_t_l->setText(QString::number(uart_val[6]));
 
-    ui->laser0_l->setText(QString::number(uart_val[8]));
+    ui->laser0_l->setText(QString::number(uart_val[8]) + QString(" mm"));
     ui->laser1_l->setText(QString::number(uart_val[9]));
     ui->laser2_l->setText(QString::number(uart_val[10]));
 
@@ -148,18 +152,60 @@ void MainWindow::car_status_feedback(float *uart_val){
 
 void MainWindow::car_command(){
     // car->move_spd = 0;
-    // 车速 车姿态 升降状态 0.0
-    // 拨杆角度　拨杆速度　拨杆扭矩 0.0
-    // 激光数据0　激光数据1　激光数据2 0.0
-    // 超声波前 超声波后 前碰撞状态 0.0
+    // 前进指令　升降调节　光源开关1 光源开关2
+    // 拨杆位置　拨杆速度
+
+    if((int)(car->lift) == 0) car->lift = 1;
+    else car->lift = 0;
 
     float val[FRAME_LENGTH] = {
-        3.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+        car->move_spd, car->dir_spd, 0.0, 0.0,
+        car->bogan_p, car->bogan_v, 0.0, 0.0, 
+        car->lift, car->light_on, car->light_on2, 0.0, 
+        0.0, 0.0, 0.0, 0.0
     };
+
     car_slc_send(val);
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *ev){
+
+    if(ev->key() == Qt::Key_W ){
+        car->move_spd += 100;
+    }else if(ev->key() == Qt::Key_S){
+        car->move_spd -= 100;
+    }else if(ev->key() == Qt::Key_A){
+        car->dir_spd += 60;
+    }else if(ev->key() == Qt::Key_D){
+        car->dir_spd -= 60;
+    }else if(ev->key() == Qt::Key_G && ev->modifiers() == Qt::ControlModifier){
+        car->bogan_v +=10;
+    }else if(ev->key() == Qt::Key_H && ev->modifiers() == Qt::ControlModifier){
+        car->bogan_v -=10;
+    }else if(ev->key() == Qt::Key_V && ev->modifiers() == Qt::ControlModifier){
+        car->lift = 0;
+    }else if(ev->key() == Qt::Key_B && ev->modifiers() == Qt::ControlModifier){
+        car->lift = 1;
+    }else if(ev->key() == Qt::Key_N && ev->modifiers() == Qt::ControlModifier){
+        car->light_on = 0;
+    }else if(ev->key() == Qt::Key_M && ev->modifiers() == Qt::ControlModifier){
+        car->light_on = 1;
+    }else if(ev->key() == Qt::Key_K && ev->modifiers() == Qt::ControlModifier){
+        car->supp = 0;
+    }else if(ev->key() == Qt::Key_L && ev->modifiers() == Qt::ControlModifier){
+        car->supp = 1;
+    }
+    
+    // printf("car->move_spd %f \n",car->move_spd);
+    float val[FRAME_LENGTH] = {
+        car->move_spd, car->dir_spd, 0.0, 0.0,
+        car->bogan_p, car->bogan_v, car->supp, 0.0, 
+        car->lift, car->light_on, car->light_on2, 0.0, 
+        0.0, 0.0, 0.0, 0.0
+    };
+    car_slc_send(val);
+    return;
+}
 
 bool MainWindow::eventFilter(QObject *target, QEvent *event){
 

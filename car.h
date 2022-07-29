@@ -13,8 +13,8 @@
 
 #include "hkimage.h"
 
-#define MSG_LENG                    96
-#define FRAME_LENGTH                16
+#define MSG_LENG                    96          // tcp 车载信息字节数
+#define FRAME_LENGTH                16          // tcp 一帧float数量
 
 extern QMutex mutex_car;
 
@@ -37,11 +37,13 @@ protected:
 
 public:
     float move_spd = 0.0;
-    float light_on = 0.0;
+    float dir_spd = 0.0;
     float lift = 0.0;
+    float light_on = 0.0;
+    float light_on2 = 0.0;
     float bogan_p = 0.0;
     float bogan_v = 0.0;
-
+    float supp = 0.0;
 };
 
 void car_img_slc_init();

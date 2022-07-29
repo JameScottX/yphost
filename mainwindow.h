@@ -48,7 +48,8 @@ private:
 protected:
     bool eventFilter(QObject *target, QEvent *event);
     void closeEvent(QCloseEvent *event);
-    
+    void keyPressEvent(QKeyEvent *ev);
+
 protected slots:
     void m_timer();
     void hk_cam_f_show(QImage);

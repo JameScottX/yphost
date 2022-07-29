@@ -1,2 +1,0 @@
-/usr/bin/ar qc release/libslc.a CMakeFiles/slc.dir/src/slc.c.o CMakeFiles/slc.dir/src/tcp_create_socket.c.o CMakeFiles/slc.dir/src/tcp_thread.c.o CMakeFiles/slc.dir/src/udp_create_socket.c.o CMakeFiles/slc.dir/src/udp_mult_thread.c.o CMakeFiles/slc.dir/src/udp_multicast.c.o CMakeFiles/slc.dir/src/udp_thread.c.o
-/usr/bin/ranlib release/libslc.a
