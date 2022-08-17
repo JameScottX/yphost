@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QThread>
+#include <QDoubleValidator>
 
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
@@ -40,6 +41,7 @@ public:
     
     HKHandle *hk;
     HKHandle *hk_up;
+    HKHandle *hk_now;
     CAR *car;
     
 private:
@@ -56,6 +58,7 @@ protected slots:
     void hk_cam_f_rb_open();
     void hk_cam_u_show(QImage);
     void hk_cam_u_rb_open();
+    void hk_cam_save();
 
     void state_change();
 
@@ -64,7 +67,13 @@ protected slots:
     void car_status_feedback(float *uart_val);
 
     void car_command();
-
+    void car_command2(int val);
+    void car_command3();
+    void car_init();
+    
 };
 
 #endif // MAINWINDOW_H
+
+
+

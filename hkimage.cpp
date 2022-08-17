@@ -1,10 +1,12 @@
 #include "hkimage.h"
 
 QMutex mutex;
+char hk_img_name[128];
 
-HKHandle::HKHandle(std::string cam_name_, QObject *parent) : QThread(parent){
+HKHandle::HKHandle(std::string cam_name_, std::string file_save_path_, QObject *parent) : QThread(parent){
     isstop = false;
-    this->cam_name = cam_name_;
+    cam_name = cam_name_;
+    file_save_path = file_save_path_ + "/" + cam_name_;
 }
 
 HKHandle::~HKHandle(){
@@ -81,6 +83,17 @@ void HKHandle::run(){
         }
         img_rev = cv::Mat(stOutFrame.stFrameInfo.nHeight, stOutFrame.stFrameInfo.nWidth , CV_8UC3, pData_rgb);
         
+        // 保存图片
+        mutex.lock();
+        if(hkp.issave == true){
+            get_sys_time(file_save_path); //得到系统时间
+            cv::imwrite(hk_img_name, img_rev);
+            printf("%s saved.\n",hk_img_name);
+            hkp.issave = false;
+        }
+        mutex.unlock();
+
+        // 简单图像处理
         mutex.lock();
         if(hkp.issharpen == true){
             char arith[9] = {
@@ -93,6 +106,7 @@ void HKHandle::run(){
         QImage temp = mat2QImage(img_rev);
         emit img_emit(temp);
         usleep(100);
+
     }
 }
 
@@ -183,6 +197,21 @@ QImage mat2QImage(cv::Mat& mat){
         return QImage();
     }
 }
+
+char* get_sys_time(std::string &cam){
+    time_t tt;
+    time( &tt );
+    tt = tt + 8*3600;  // transform the time zone
+    tm* t= gmtime( &tt );
+    sprintf(hk_img_name, "%s-%d-%02d-%02d %02d:%02d:%02d.jpg\n", cam.data(),
+           t->tm_year + 1900,
+           t->tm_mon + 1,
+           t->tm_mday,
+           t->tm_hour,
+           t->tm_min,
+           t->tm_sec);
+}
+
 
 
 bool HKHandle::PrintDeviceInfo(MV_CC_DEVICE_INFO* pstMVDevInfo){

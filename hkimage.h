@@ -5,6 +5,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
+
 #include "MvCameraControl.h"
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
@@ -18,13 +20,14 @@
 
 
 extern QMutex mutex;
+extern char hk_img_name[128];
 
 struct HK_Param
 {
     float frame_rate = 0.0f;
     unsigned int frame_counter = 0;
     bool issharpen = false;
-
+    bool issave = false;
 } ;
 
 class HKHandle : public QThread
@@ -32,7 +35,7 @@ class HKHandle : public QThread
     Q_OBJECT
 
 public:
-    HKHandle(std::string cam_name_, QObject *parent = 0);
+    HKHandle(std::string cam_name_, std::string file_save_path_, QObject *parent = 0);
     ~HKHandle();
     bool isstop = false;
     bool isopen = false;
@@ -41,6 +44,7 @@ public:
     HK_Param hkp;
     unsigned char cam_id = 0;
     std::string cam_name;
+    std::string file_save_path;
 
     void open_camera(unsigned char id);
     void close_camera(unsigned char id);
@@ -73,8 +77,7 @@ protected:
 
 QImage mat2QImage(cv::Mat& mat);
 cv::Mat imgSharpen(const cv::Mat & img, char * arith);
-
-
+char* get_sys_time(std::string &cam);
 
 #endif 
 

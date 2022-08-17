@@ -110,3 +110,13 @@ float char2float(unsigned char *bytes){
     return val;
 }
 
+float data_map(int val, int bias, int val_max, float *rge){
+    return (float)(val - bias) / val_max * (rge[1] - rge[0]);
+}
+
+int data_mapback(float val, float *rge, int bias, int val_max){
+    return (int) val / (rge[1] - rge[0]) * val_max + bias;
+}
+
+
+

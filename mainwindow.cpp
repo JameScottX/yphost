@@ -13,8 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->hk_sa->viewport()->installEventFilter(this);
     ui->hk_img_l->installEventFilter(this);
 
-    hk = new HKHandle("MV-CS016-10GC");
-    hk_up = new HKHandle("MV-CA060-10GC");
+    hk = new HKHandle("MV-CS016-10GC", "/home/jame/ubuntu-data/yphost_image");
+    hk_up = new HKHandle("MV-CA060-10GC", "/home/jame/ubuntu-data/yphost_image");
 
     connect(hk, SIGNAL(img_emit(QImage)), this, SLOT(hk_cam_f_show(QImage)));
     hk->start();
@@ -22,7 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     hk_up->start();
 
     connect(ui->sharpen_rb,SIGNAL(clicked(bool)),
-    this,SLOT(state_change()));
+        this,SLOT(state_change()));
+    connect(ui->save_img_pb,SIGNAL(released()),
+        this,SLOT(hk_cam_save()));
 
     ui->car_f_img_l->setScaledContents(true);
     ui->car_h_img_l->setScaledContents(true);
@@ -35,7 +37,42 @@ MainWindow::MainWindow(QWidget *parent) :
 
     car_img_slc_init();
 
-    connect(ui->up_down_pb, SIGNAL(released()), this, SLOT(car_command()));
+    // 所有按键都在一个槽函数中处理
+    QList<QPushButton *> pblist = ui->tabWidget->findChildren<QPushButton *>();
+    foreach(auto pb, pblist){
+        if(pb->objectName() == QString("save_img_pb")) continue;
+        connect(pb, SIGNAL(released()), this, SLOT(car_command()));
+    }
+    pblist = ui->tabWidget_2->findChildren<QPushButton *>();
+    foreach(auto pb, pblist){
+        if(pb->objectName() == QString("save_img_pb")) continue;
+        connect(pb, SIGNAL(released()), this, SLOT(car_command()));
+    }
+
+    // 所有滑块在一个槽函数中处理
+    QList<QSlider *> sllist = ui->tabWidget->findChildren<QSlider *>();
+    foreach(auto sl, sllist){
+        connect(sl, SIGNAL(valueChanged(int)), this, SLOT(car_command2(int)));
+    }
+    sllist = ui->tabWidget_2->findChildren<QSlider *>();
+    foreach(auto sl, sllist){
+        connect(sl, SIGNAL(valueChanged(int)), this, SLOT(car_command2(int)));
+    }
+    // 所有编辑数值在一个槽函数中处理
+    QDoubleValidator* aDoubleValidator = new QDoubleValidator;
+    QList<QLineEdit *>lelist = ui->tabWidget->findChildren<QLineEdit *>();
+    foreach(auto le, lelist){
+        aDoubleValidator->setRange(-1e15, 1e15, 5);
+        le->setValidator(aDoubleValidator);
+        connect(le, SIGNAL(editingFinished()), this, SLOT(car_command2(int)));
+    }
+    lelist = ui->tabWidget_2->findChildren<QLineEdit *>();
+    foreach(auto le, lelist){
+        aDoubleValidator->setRange(-1e15, 1e15, 5);
+        le->setValidator(aDoubleValidator);
+        connect(le, SIGNAL(editingFinished()), this, SLOT(car_command2(int)));
+    }
+    car_init();
 
     connect(ui->hk_cam_f_rb, SIGNAL(toggled(bool)), this, SLOT(hk_cam_f_rb_open()));
     connect(ui->hk_cam_u_rb, SIGNAL(toggled(bool)), this, SLOT(hk_cam_u_rb_open()));
@@ -44,6 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // 初始化界面反馈
     float uart_val[16] = {0.0f};
     car_status_feedback(uart_val);
+
+    delete aDoubleValidator;
 }
 
 MainWindow::~MainWindow()
@@ -61,8 +100,8 @@ MainWindow::~MainWindow()
     delete timer;
     delete hk, hk_up;
     delete car;
-}
 
+}
 
 void MainWindow::m_timer(){
     // 帧率显示
@@ -83,6 +122,7 @@ void MainWindow::hk_cam_f_rb_open(){
     if(ui->hk_cam_f_rb->isChecked()){
         hk->hk_find();
         hk->open_camera(hk->cam_id);
+        hk_now = hk;
     }else{
         if(hk->open_status()){
             hk->close_camera(hk->cam_id);
@@ -101,6 +141,7 @@ void MainWindow::hk_cam_u_rb_open(){
     if(ui->hk_cam_u_rb->isChecked()){
         hk_up->hk_find();
         hk_up->open_camera(hk_up->cam_id);
+        hk_now = hk_up;
     }else{
         if(hk_up->open_status()){
             hk_up->close_camera(hk_up->cam_id);
@@ -151,21 +192,173 @@ void MainWindow::car_status_feedback(float *uart_val){
 }
 
 void MainWindow::car_command(){
-    // car->move_spd = 0;
-    // 前进指令　升降调节　光源开关1 光源开关2
-    // 拨杆位置　拨杆速度
 
-    if((int)(car->lift) == 0) car->lift = 1;
-    else car->lift = 0;
-
-    float val[FRAME_LENGTH] = {
-        car->move_spd, car->dir_spd, 0.0, 0.0,
-        car->bogan_p, car->bogan_v, 0.0, 0.0, 
-        car->lift, car->light_on, car->light_on2, 0.0, 
+    QObject *object = QObject::sender();
+    QPushButton *pb = qobject_cast<QPushButton *>(object);
+    // 默认取消软急停
+    car->emgc = 0.0;
+    if(pb->objectName() == QString("up_down_pb")){ 
+        // 升降
+        // pb->setText(QString(""));
+        if((int)(car->lift) == 0) car->lift = 1;
+        else car->lift = 0;
+        // printf("up_down_pb\n");
+    }else if(pb->objectName() == QString("supp_pb")){
+        // 前支撑
+        if((int)(car->supp) == 0) car->supp = 1;
+        else car->supp = 0;
+        // printf("supp_pb\n");
+    }else if(pb->objectName() == QString("emgc_pb")){
+        // 软急停
+        car->emgc = 120.0;
+        car->move_spd = 0.0;
+        car->dir_spd = 0.0;
+        car->bogan_v = 0.0;
+        car->supp = 0.0;
+        car->lift = 0.0; 
+        car->light_on=0.0;car->light_on2=0.0;car->light_on3=0.0;
+        // printf("emgc_pb\n");
+    }
+    
+    float val_send[FRAME_LENGTH] = {
+        car->move_spd, car->dir_spd, car->dir, car->emgc,
+        car->bogan_p, car->bogan_v, car->supp, 0.0, 
+        car->lift, car->light_on, car->light_on2, car->light_on3, 
         0.0, 0.0, 0.0, 0.0
     };
+    car_slc_send(val_send);
+}
 
-    car_slc_send(val);
+void MainWindow::car_command2(int val){
+
+    QObject *object = QObject::sender();
+    QSlider *sl = qobject_cast<QSlider *>(object);
+
+    // 默认取消软急停
+    car->emgc = 0.0;
+    if(sl->objectName() == QString("hS_0")){ 
+        // 前灯
+        car->light_on = data_map(val, 0, 10000, car->light_on_rge);
+        ui->lE_0->setText(QString::number(car->light_on));
+        // printf("light_on %f\n", car->light_on);
+    }else if(sl->objectName() == QString("hS_1")){
+        // 上灯
+        car->light_on2 = data_map(val, 0, 10000, car->light_on_rge);
+        ui->lE_1->setText(QString::number(car->light_on2));
+        // printf("light_on2 %f\n", car->light_on2);
+    }else if(sl->objectName() == QString("hS_2")){
+        // 视野灯
+        car->light_on3 = data_map(val, 0, 10000, car->light_on_rge);
+        ui->lE_2->setText(QString::number(car->light_on3));
+        // printf("light_on3 %f\n", car->light_on3);
+    }else if(sl->objectName() == QString("hS_3")){
+        // 拨杆速度
+        car->bogan_v = data_map(val, 5000, 10000, car->bogan_v_rge);
+        ui->lE_3->setText(QString::number(car->bogan_v));
+        // printf("bogan_v %f\n", car->bogan_v);
+    }else if(sl->objectName() == QString("hS_4")){
+        // 前进速度
+        car->move_spd = data_map(val, 5000, 10000, car->move_spd_rge);
+        ui->lE_4->setText(QString::number(car->move_spd));
+        // printf("move_spd %f\n", car->move_spd);
+    }else if(sl->objectName() == QString("hS_5")){
+        // 角速度
+        car->dir_spd = data_map(val, 5000, 10000, car->dir_spd_rge);
+        ui->lE_5->setText(QString::number(car->dir_spd));
+        // printf("dir_spd %f\n", car->dir_spd);
+    }else if(sl->objectName() == QString("hS_6")){
+        // 前进角度
+        car->dir = data_map(val, 5000, 10000, car->dir_rge);
+        ui->lE_6->setText(QString::number(car->dir));
+        // printf("dir %f\n", car->dir);
+    }
+
+    float val_send[FRAME_LENGTH] = {
+        car->move_spd, car->dir_spd, car->dir, car->emgc,
+        car->bogan_p, car->bogan_v, car->supp, 0.0, 
+        car->lift, car->light_on, car->light_on2, car->light_on3, 
+        0.0, 0.0, 0.0, 0.0
+    };
+    car_slc_send(val_send);
+}
+
+void MainWindow::car_command3(){
+
+    QObject *object = QObject::sender();
+    QLineEdit *le = qobject_cast<QLineEdit *>(object);
+
+    // // 默认取消软急停
+    // car->emgc = 0.0;
+    // if(le->objectName() == QString("lE_0")){ 
+    //     // 前灯
+    //     car->light_on = data_map(val, 0, 10000, car->light_on_rge);
+    //     printf("light_on %f\n", car->light_on);
+    // }else if(le->objectName() == QString("lE_1")){
+    //     // 上灯
+    //     car->light_on2 = data_map(val, 0, 10000, car->light_on_rge);
+    //     printf("light_on2 %f\n", car->light_on2);
+    // }else if(le->objectName() == QString("lE_2")){
+    //     // 视野灯
+    //     car->light_on3 = data_map(val, 0, 10000, car->light_on_rge);
+    //     printf("light_on3 %f\n", car->light_on3);
+    // }else if(le->objectName() == QString("lE_3")){
+    //     // 拨杆速度
+    //     car->bogan_v = data_map(val, 5000, 10000, car->bogan_v_rge);
+    //     printf("bogan_v %f\n", car->bogan_v);
+    // }else if(le->objectName() == QString("lE_4")){
+    //     // 前进速度
+    //     car->move_spd = data_map(val, 5000, 10000, car->move_spd_rge);
+    //     printf("move_spd %f\n", car->move_spd);
+    // }else if(le->objectName() == QString("lE_5")){
+    //     // 角速度
+    //     car->dir_spd = data_map(val, 5000, 10000, car->dir_spd_rge);
+    //     printf("dir_spd %f\n", car->dir_spd);
+    // }else if(le->objectName() == QString("lE_6")){
+    //     // 前进角度
+    //     car->dir = data_map(val, 5000, 10000, car->dir_rge);
+    //     printf("dir %f\n", car->dir);
+    // }
+
+    // float val_send[FRAME_LENGTH] = {
+    //     car->move_spd, car->dir_spd, car->dir, car->emgc,
+    //     car->bogan_p, car->bogan_v, car->supp, 0.0, 
+    //     car->lift, car->light_on, car->light_on2, car->light_on3, 
+    //     0.0, 0.0, 0.0, 0.0
+    // };
+    // car_slc_send(val_send);
+    
+}
+
+void MainWindow::car_init(){
+
+    ui->lE_0->setText(QString::number(0));
+    ui->hS_0->setValue(data_mapback(ui->lE_0->text().toFloat(),
+             car->light_on_rge, 0, 10000));
+    
+    ui->lE_1->setText(QString::number(0));
+    ui->hS_1->setValue(data_mapback(ui->lE_1->text().toFloat(),
+             car->light_on_rge, 0, 10000));
+    
+    ui->lE_2->setText(QString::number(0));
+    ui->hS_2->setValue(data_mapback(ui->lE_2->text().toFloat(),
+             car->light_on_rge, 0, 10000));
+    
+    ui->lE_3->setText(QString::number(0));
+    ui->hS_3->setValue(data_mapback(ui->lE_3->text().toFloat(), 
+            car->bogan_v_rge, 5000, 10000));
+    
+    ui->lE_4->setText(QString::number(0));
+    ui->hS_4->setValue(data_mapback(ui->lE_4->text().toFloat(), 
+            car->move_spd_rge, 5000, 10000));
+
+    ui->lE_5->setText(QString::number(0));
+    ui->hS_5->setValue(data_mapback(ui->lE_5->text().toFloat(), 
+            car->dir_spd_rge, 5000, 10000));
+
+    ui->lE_6->setText(QString::number(0));
+    ui->hS_6->setValue(data_mapback(ui->lE_6->text().toFloat(), 
+            car->dir_rge, 5000, 10000));
+
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev){
@@ -196,11 +389,10 @@ void MainWindow::keyPressEvent(QKeyEvent *ev){
         car->supp = 1;
     }
     
-    // printf("car->move_spd %f \n",car->move_spd);
     float val[FRAME_LENGTH] = {
-        car->move_spd, car->dir_spd, 0.0, 0.0,
+        car->move_spd, car->dir_spd, car->dir, car->emgc,
         car->bogan_p, car->bogan_v, car->supp, 0.0, 
-        car->lift, car->light_on, car->light_on2, 0.0, 
+        car->lift, car->light_on, car->light_on2, car->light_on3, 
         0.0, 0.0, 0.0, 0.0
     };
     car_slc_send(val);
@@ -282,10 +474,22 @@ void MainWindow::state_change(){
 
     mutex.lock();
     if(ui->sharpen_rb->isChecked())
-        hk->hkp.issharpen = true;
+        hk_now->hkp.issharpen = true;
     else
-        hk->hkp.issharpen = false;
+        hk_now->hkp.issharpen = false;
     mutex.unlock();
 
 }
+
+void MainWindow::hk_cam_save(){
+
+    mutex.lock();
+    hk_now->hkp.issave = true;
+    mutex.unlock();
+    
+}
+
+
+
+
 
